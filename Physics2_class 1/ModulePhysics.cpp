@@ -11,6 +11,7 @@
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	debug = true;
+	world = NULL;
 }
 
 // Destructor
@@ -27,9 +28,23 @@ bool ModulePhysics::Start()
 	// - You need init the world in the constructor
 	// - Remember to destroy the world after using it
 	b2Vec2 gravity(GRAVITY_X, GRAVITY_Y);
-	b2World* world = new b2World(gravity);
+	world = new b2World(gravity);
 
 	// TODO 4: Create a a big static circle as "ground"
+	b2BodyDef bodydef;
+	
+	bodydef.type = b2_staticBody;
+	bodydef.position.Set(PIXTOMET(500),PIXTOMET(400));
+
+	b2Body* body = world->CreateBody(&bodydef);
+
+	b2CircleShape shape;
+	shape.m_radius = PIXTOMET(275);
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	body->CreateFixture(&fixture);
+
 	return true;
 }
 
@@ -37,6 +52,7 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate()
 {
 	// TODO 3: Update the simulation ("step" the world)
+	world->Step(TIME_STEP, ITER_VEL, ITER_POSITION);
 
 	return UPDATE_CONTINUE;
 }
@@ -55,7 +71,7 @@ update_status ModulePhysics::PostUpdate()
 
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
-	/*
+	
 	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
 	{
 		for(b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
@@ -66,14 +82,14 @@ update_status ModulePhysics::PostUpdate()
 				{
 					b2CircleShape* shape = (b2CircleShape*)f->GetShape();
 					b2Vec2 pos = f->GetBody()->GetPosition();
-					App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
+					App->renderer->DrawCircle(METTOPIX(pos.x), METTOPIX(pos.y), METTOPIX(shape->m_radius), 255, 255, 255);
 				}
 				break;
 
 				// You will have to add more cases to draw boxes, edges, and polygons ...
 			}
 		}
-	}*/
+	}
 
 	return UPDATE_CONTINUE;
 }

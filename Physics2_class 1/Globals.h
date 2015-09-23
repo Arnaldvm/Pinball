@@ -11,6 +11,9 @@ void log(const char file[], int line, const char* format, ...);
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
 
+#define PIXTOMET(px)  (px*0.01f) 
+#define METTOPIX(m) (m*100.0f)
+
 typedef unsigned int uint;
 
 enum update_status
@@ -32,3 +35,6 @@ enum update_status
 #define TITLE "2D Physics Playground"
 #define GRAVITY_X 0.0f
 #define GRAVITY_Y -9.8f
+#define TIME_STEP 1.0f / 60.0f
+#define ITER_VEL 8
+#define ITER_POSITION 3
